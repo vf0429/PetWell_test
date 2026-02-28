@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetWell Merchant Console</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">PetWell Merchant</div>
+      <div class="tenant">Tenant: Demo Merchant Group</div>
+      <nav class="menu">
+        <button class="menu-item active" data-section="dashboard">Dashboard</button>
+        <button class="menu-item" data-section="orders">Orders / Appointments</button>
+        <button class="menu-item" data-section="catalog">Products / Visits</button>
+        <button class="menu-item" data-section="customers">Customers / Pet Profiles</button>
+        <button class="menu-item" data-section="analytics">Analytics</button>
+        <button class="menu-item" data-section="settings">Settings</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1>商家工作台</h1>
+          <p id="topbar-desc">统一管理销售、预约、就诊与回访</p>
+        </div>
+        <div class="mode-switch" role="tablist" aria-label="merchant mode">
+          <button class="mode-btn active" data-mode="shop">商品商家</button>
+          <button class="mode-btn" data-mode="clinic">医院商家</button>
+        </div>
+      </header>
+
+      <section id="dashboard" class="panel active">
+        <div id="kpi-grid" class="kpi-grid"></div>
+        <div class="grid two-col">
+          <article class="card">
+            <h2>系统状态</h2>
+            <ul id="dashboard-status" class="list"></ul>
+          </article>
+          <article class="card">
+            <h2>快速动作</h2>
+            <div class="quick-actions">
+              <button class="btn" data-action="goto-orders">去订单/预约页</button>
+              <button class="btn" data-action="goto-catalog">去商品/就诊页</button>
+              <button class="btn" data-action="reload">刷新数据</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="orders" class="panel">
+        <div class="grid two-col">
+          <article class="card" data-mode-only="shop">
+            <h2>新增订单</h2>
+            <form id="order-form" class="form-grid">
+              <label>客户ID<input name="customer_id" required placeholder="cus_xxx" /></label>
+              <label>金额(HKD)<input name="amount_hkd" required type="number" step="0.01" /></label>
+              <label>状态
+                <select name="status">
+                  <option value="pending">pending</option>
+                  <option value="paid">paid</option>
+                  <option value="cancelled">cancelled</option>
+                </select>
+              </label>
+              <button type="submit" class="btn primary">创建订单</button>
+            </form>
+          </article>
+
+          <article class="card" data-mode-only="clinic">
+            <h2>新增预约</h2>
+            <form id="appointment-form" class="form-grid">
+              <label>宠物ID<input name="pet_id" required placeholder="pet_001" /></label>
+              <label>医生ID<input name="doctor_id" required placeholder="doc_001" /></label>
+              <label>预约时间(ISO)<input name="scheduled_at" required placeholder="2026-03-01T10:00:00Z" /></label>
+              <label>主诉<input name="chief_complaint" required placeholder="vomiting" /></label>
+              <button type="submit" class="btn primary">创建预约</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <h2 id="orders-list-title">订单列表</h2>
+            <div class="table-wrap">
+              <table>
+                <thead id="orders-table-head"></thead>
+                <tbody id="orders-table-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="catalog" class="panel">
+        <div class="grid two-col">
+          <article class="card" data-mode-only="shop">
+            <h2>新增商品</h2>
+            <form id="product-form" class="form-grid">
+              <label>商品名称<input name="name" required /></label>
+              <label>SKU<input name="sku" required /></label>
+              <label>库存<input name="stock" required type="number" /></label>
+              <label>价格(HKD)<input name="price_hkd" required type="number" step="0.01" /></label>
+              <button type="submit" class="btn primary">创建商品</button>
+            </form>
+          </article>
+
+          <article class="card" data-mode-only="clinic">
+            <h2>新增就诊记录</h2>
+            <form id="visit-form" class="form-grid">
+              <label>宠物ID<input name="pet_id" required /></label>
+              <label>医生ID<input name="doctor_id" required /></label>
+              <label>关联预约ID<input name="appointment_id" placeholder="可选" /></label>
+              <label>状态
+                <select name="status">
+                  <option value="in_progress">in_progress</option>
+                  <option value="diagnosed">diagnosed</option>
+                  <option value="closed">closed</option>
+                </select>
+              </label>
+              <button type="submit" class="btn primary">创建就诊</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <h2 id="catalog-list-title">商品列表</h2>
+            <div class="table-wrap">
+              <table>
+                <thead id="catalog-table-head"></thead>
+                <tbody id="catalog-table-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="customers" class="panel">
+        <div class="grid two-col">
+          <article class="card" data-mode-only="shop">
+            <h2>新增客户</h2>
+            <form id="customer-form" class="form-grid">
+              <label>姓名<input name="name" required /></label>
+              <label>Email<input name="email" required type="email" /></label>
+              <label>电话<input name="phone" required /></label>
+              <button type="submit" class="btn primary">创建客户</button>
+            </form>
+          </article>
+
+          <article class="card" data-mode-only="clinic">
+            <h2>新增处方</h2>
+            <form id="prescription-form" class="form-grid">
+              <label>就诊ID<input name="visit_id" required /></label>
+              <label>药品<input name="medicine_name" required /></label>
+              <label>剂量<input name="dosage" required /></label>
+              <label>频次<input name="frequency" required /></label>
+              <label>天数<input name="duration_days" required type="number" /></label>
+              <label>备注<input name="notes" /></label>
+              <button type="submit" class="btn primary">创建处方</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <h2 id="customers-list-title">客户列表</h2>
+            <div class="table-wrap">
+              <table>
+                <thead id="customers-table-head"></thead>
+                <tbody id="customers-table-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="analytics" class="panel">
+        <article class="card">
+          <h2>关键指标 JSON 预览（便于联调）</h2>
+          <pre id="analytics-json" class="json-box"></pre>
+        </article>
+      </section>
+
+      <section id="settings" class="panel">
+        <div class="grid two-col">
+          <article class="card">
+            <h2>Shopify OAuth 占位测试</h2>
+            <form id="shopify-oauth-form" class="form-grid">
+              <label>Shop Domain<input name="shop_domain" required placeholder="demo-store.myshopify.com" /></label>
+              <button type="submit" class="btn primary">发起 OAuth 占位请求</button>
+            </form>
+          </article>
+          <article class="card">
+            <h2>Shopify Webhook 占位测试</h2>
+            <form id="shopify-webhook-form" class="form-grid">
+              <label>Topic<input name="topic" required value="orders/create" /></label>
+              <button type="submit" class="btn primary">发送 Webhook 占位事件</button>
+            </form>
+          </article>
+        </div>
+        <article class="card">
+          <h2>最后响应</h2>
+          <pre id="settings-response" class="json-box">{}</pre>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

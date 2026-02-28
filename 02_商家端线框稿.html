@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PetWell 商家端线框（Dashboard）</title>
+  <style>
+    :root {
+      --bg: #f7f9fc;
+      --card: #fff;
+      --line: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --blue: #0052ff;
+      --purple: #6e56cf;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC",sans-serif; background: var(--bg); color: var(--text); }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: #0f172a; color: #cbd5e1; padding: 20px 14px; }
+    .brand { color: #fff; font-weight: 800; font-size: 20px; margin-bottom: 24px; }
+    .nav a { display:block; color:#cbd5e1; text-decoration:none; padding:10px 12px; border-radius:10px; margin-bottom:8px; }
+    .nav a.active { background: rgba(59,130,246,.2); color:#fff; }
+    .main { padding: 22px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .chip { border:1px solid var(--line); background:#fff; padding:8px 10px; border-radius:999px; font-size:12px; }
+    .tabs { display:flex; gap:8px; margin-bottom:18px; }
+    .tab { padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:#fff; font-size:13px; }
+    .tab.active { border-color:#bfdbfe; background:#eff6ff; color:#1d4ed8; }
+    .cards4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; }
+    .metric { font-size:24px; font-weight:800; margin-top:4px; }
+    .grid2 { display:grid; grid-template-columns:1.3fr 1fr; gap:12px; margin-bottom:12px; }
+    .placeholder { border:1px dashed #94a3b8; border-radius:10px; padding:12px; min-height:140px; color:#64748b; background:#f8fafc; }
+    .list li { padding:10px 0; border-bottom:1px dashed #e5e7eb; font-size:14px; }
+    .footer-note { color:var(--muted); font-size:12px; margin-top:8px; }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display:none; }
+      .cards4 { grid-template-columns:1fr 1fr; }
+      .grid2,.split { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">PetWell Merchant</div>
+      <nav class="nav">
+        <a class="active" href="#">Dashboard</a>
+        <a href="#">Orders / Appointments</a>
+        <a href="#">Products / Visits</a>
+        <a href="#">Customers / Pet Profiles</a>
+        <a href="#">Messages</a>
+        <a href="#">Analytics</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 style="margin:0 0 6px 0;">商家工作台</h2>
+          <div style="color:#6b7280;font-size:14px;">统一管理商品销售与宠物医院就诊流程</div>
+        </div>
+        <div class="chip">Tenant: Demo Clinic + Shop</div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">商品商家视图</div>
+        <div class="tab">医院商家视图</div>
+      </div>
+
+      <section class="cards4">
+        <article class="card"><div style="color:#6b7280;font-size:12px;">今日订单</div><div class="metric">128</div></article>
+        <article class="card"><div style="color:#6b7280;font-size:12px;">待发货</div><div class="metric">23</div></article>
+        <article class="card"><div style="color:#6b7280;font-size:12px;">今日预约</div><div class="metric">41</div></article>
+        <article class="card"><div style="color:#6b7280;font-size:12px;">回访待办</div><div class="metric">9</div></article>
+      </section>
+
+      <section class="grid2">
+        <article class="card">
+          <h3 style="margin-top:0;">销售与就诊趋势</h3>
+          <div class="placeholder">[ 折线图占位 ] GMV / 订单 / 预约 / 完诊</div>
+        </article>
+        <article class="card">
+          <h3 style="margin-top:0;">异常提醒</h3>
+          <ul class="list" style="list-style:none; padding:0; margin:0;">
+            <li>库存预警：Omega-3 Supplement 剩余 7 件</li>
+            <li>预约冲突：Dr. Chan 15:30 重叠</li>
+            <li>同步失败：Shopify webhook 重试中</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="split">
+        <article class="card">
+          <h3 style="margin-top:0;">商品商家区</h3>
+          <div class="placeholder">[ 订单列表 / 发货状态 / 热销商品 ]</div>
+          <div class="footer-note">对接 Shopify：订单、库存、发货状态</div>
+        </article>
+        <article class="card">
+          <h3 style="margin-top:0;">医院商家区</h3>
+          <div class="placeholder">[ 今日候诊 / 就诊流程 / 处方与回访 ]</div>
+          <div class="footer-note">后端存储：预约、就诊、诊断、处方、病历文件</div>
+        </article>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
