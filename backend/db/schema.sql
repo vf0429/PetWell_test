@@ -1,76 +1,95 @@
--- PetWell Merchant DB schema draft (SQLite/Postgres compatible with minor changes)
+-- PetWell Merchant SQLite schema
 
-CREATE TABLE IF NOT EXISTS tenants (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  type TEXT NOT NULL, -- shop | clinic
-  status TEXT NOT NULL DEFAULT active,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS staff_users (
+CREATE TABLE IF NOT EXISTS orders (
   id TEXT PRIMARY KEY,
   tenant_id TEXT NOT NULL,
-  role TEXT NOT NULL,
+  customer_id TEXT NOT NULL,
+  status TEXT NOT NULL,
+  amount_hkd REAL NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
   name TEXT NOT NULL,
-  email TEXT,
-  phone TEXT,
-  password_hash TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (tenant_id) REFERENCES tenants(id)
+  sku TEXT NOT NULL,
+  stock INTEGER NOT NULL,
+  price_hkd REAL NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS customers (
+  id TEXT PRIMARY KEY,
+  tenant_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  last_active TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS appointments (
   id TEXT PRIMARY KEY,
   tenant_id TEXT NOT NULL,
   pet_id TEXT NOT NULL,
-  doctor_id TEXT,
-  scheduled_at TIMESTAMP NOT NULL,
+  doctor_id TEXT NOT NULL,
+  scheduled_at TEXT NOT NULL,
   status TEXT NOT NULL,
-  chief_complaint TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  chief_complaint TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS visits (
   id TEXT PRIMARY KEY,
   tenant_id TEXT NOT NULL,
-  appointment_id TEXT,
+  appointment_id TEXT NOT NULL,
   pet_id TEXT NOT NULL,
-  doctor_id TEXT,
+  doctor_id TEXT NOT NULL,
   status TEXT NOT NULL,
-  checkin_at TIMESTAMP,
-  checkout_at TIMESTAMP,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  checkin_at TEXT NOT NULL,
+  checkout_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS prescriptions (
   id TEXT PRIMARY KEY,
   visit_id TEXT NOT NULL,
   medicine_name TEXT NOT NULL,
-  dosage TEXT,
-  frequency TEXT,
-  duration_days INTEGER,
-  notes TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  dosage TEXT NOT NULL,
+  frequency TEXT NOT NULL,
+  duration_days INTEGER NOT NULL,
+  notes TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS followups (
   id TEXT PRIMARY KEY,
   visit_id TEXT NOT NULL,
-  due_at TIMESTAMP,
-  channel TEXT,
+  due_at TEXT,
+  channel TEXT NOT NULL,
   status TEXT NOT NULL,
-  result_notes TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  result_notes TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS event_logs (
+CREATE TABLE IF NOT EXISTS staff_users (
   id TEXT PRIMARY KEY,
-  tenant_id TEXT,
-  entity_type TEXT,
-  entity_id TEXT,
-  action TEXT,
-  actor_id TEXT,
-  payload TEXT,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  tenant_id TEXT NOT NULL,
+  merchant_type TEXT NOT NULL,
+  role TEXT NOT NULL,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE,
+  phone TEXT UNIQUE,
+  auth_provider TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  tenant_id TEXT NOT NULL,
+  merchant_type TEXT NOT NULL,
+  role TEXT NOT NULL,
+  display_name TEXT NOT NULL,
+  method TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL
 );

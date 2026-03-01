@@ -1,5 +1,8 @@
 # Shopify 对接清单（PetWell 商家端）
 
+> 文档用途：给开发/测试/产品统一 Shopify 接入执行路径。  
+> 当前状态：项目内已存在 OAuth/Webhook 占位接口，尚未完成真实 OAuth 验签与持久化 Token 管理。
+
 ## 1) 推荐接口
 - 主接口：Shopify Admin GraphQL API（订单/商品/库存/客户）
 - 可选：Storefront API（若 App 端需直接商品浏览）
@@ -53,3 +56,9 @@
 - POST /merchant/webhooks/shopify/fulfillments
 - POST /merchant/webhooks/shopify/inventory
 
+## 8) 与当前代码对应关系（便于 GitHub 浏览者）
+- 前端入口（占位）：`web/index.html` Settings 区域
+- 前端调用：`web/app.js`（OAuth/Webhook 测试按钮）
+- 后端占位路由：`backend/internal/server.go`
+  - `POST /api/merchant/shopify/oauth/start`
+  - `POST /api/merchant/shopify/webhooks`

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hans">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,29 +7,84 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="layout">
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-head">
+        <div class="auth-brand">PetWell Merchant</div>
+        <div class="lang-switch">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="zh">中</button>
+        </div>
+      </div>
+      <h1 data-i18n="auth_title">Welcome back</h1>
+      <p data-i18n="auth_subtitle">Use email, phone, or Google to sign in.</p>
+
+      <button id="google-login-btn" class="btn google" data-i18n="auth_google_btn">Continue with Google</button>
+
+      <div class="auth-divider"><span data-i18n="auth_or">or continue with</span></div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-tab="email" data-i18n="auth_tab_email">Email</button>
+        <button class="auth-tab" data-auth-tab="phone" data-i18n="auth_tab_phone">Phone</button>
+      </div>
+
+      <form id="email-login-form" class="form-grid auth-form active">
+        <label><span data-i18n="auth_email_label">Email</span><input name="email" required type="email" placeholder="owner@petwell.com" data-i18n-placeholder="auth_email_placeholder" /></label>
+        <label><span data-i18n="auth_password_label">Password</span><input name="password" required type="password" placeholder="********" data-i18n-placeholder="auth_password_placeholder" /></label>
+        <button type="submit" class="btn primary" data-i18n="auth_email_btn">Sign in with Email</button>
+      </form>
+
+      <form id="phone-login-form" class="form-grid auth-form">
+        <label><span data-i18n="auth_country_code_label">Country code</span>
+          <select name="country_code">
+            <option value="+86">+86</option>
+            <option value="+852">+852</option>
+            <option value="+1">+1</option>
+          </select>
+        </label>
+        <label><span data-i18n="auth_phone_label">Phone</span><input name="phone" required placeholder="13800138000" data-i18n-placeholder="auth_phone_placeholder" /></label>
+        <label><span data-i18n="auth_password_label">Password</span><input name="password" required type="password" placeholder="********" data-i18n-placeholder="auth_password_placeholder" /></label>
+        <button type="submit" class="btn primary" data-i18n="auth_phone_btn">Sign in with Phone</button>
+      </form>
+
+      <p id="auth-message" class="auth-message"></p>
+      <p class="auth-hint" data-i18n="auth_demo_hint">Demo: shop_admin@petwell.com / Shop123456, clinic_admin@petwell.com / Clinic123456</p>
+    </div>
+  </section>
+
+  <div id="app-shell" class="layout hidden">
     <aside class="sidebar">
       <div class="brand">PetWell Merchant</div>
       <div class="tenant">Tenant: Demo Merchant Group</div>
       <nav class="menu">
-        <button class="menu-item active" data-section="dashboard">Dashboard</button>
-        <button class="menu-item" data-section="orders">Orders / Appointments</button>
-        <button class="menu-item" data-section="catalog">Products / Visits</button>
-        <button class="menu-item" data-section="customers">Customers / Pet Profiles</button>
-        <button class="menu-item" data-section="analytics">Analytics</button>
-        <button class="menu-item" data-section="settings">Settings</button>
+        <button class="menu-item active" data-section="dashboard" data-i18n="menu_dashboard">Dashboard</button>
+        <button class="menu-item" data-section="orders" data-i18n="menu_orders">Orders / Appointments</button>
+        <button class="menu-item" data-section="catalog" data-i18n="menu_catalog">Products / Visits</button>
+        <button class="menu-item" data-section="customers" data-i18n="menu_customers">Customers / Pet Profiles</button>
+        <button class="menu-item" data-section="analytics" data-i18n="menu_analytics">Analytics</button>
+        <button class="menu-item" data-section="settings" data-i18n="menu_settings">Settings</button>
       </nav>
     </aside>
 
     <main class="content">
       <header class="topbar">
         <div>
-          <h1>商家工作台</h1>
-          <p id="topbar-desc">统一管理销售、预约、就诊与回访</p>
+          <h1 data-i18n="app_title">Merchant Console</h1>
+          <p id="topbar-desc"></p>
         </div>
-        <div class="mode-switch" role="tablist" aria-label="merchant mode">
-          <button class="mode-btn active" data-mode="shop">商品商家</button>
-          <button class="mode-btn" data-mode="clinic">医院商家</button>
+        <div class="topbar-right">
+          <div class="lang-switch">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="zh">中</button>
+          </div>
+          <div class="mode-switch" role="tablist" aria-label="merchant mode">
+            <button class="mode-btn active" data-mode="shop" data-i18n="mode_shop">Shop</button>
+            <button class="mode-btn" data-mode="clinic" data-i18n="mode_clinic">Clinic</button>
+          </div>
+          <div class="session-box">
+            <span id="current-user">Not signed in</span>
+            <button id="logout-btn" class="btn" data-i18n="logout_btn">Logout</button>
+          </div>
         </div>
       </header>
 
@@ -37,15 +92,15 @@
         <div id="kpi-grid" class="kpi-grid"></div>
         <div class="grid two-col">
           <article class="card">
-            <h2>系统状态</h2>
+            <h2 data-i18n="dashboard_system_status">System Status</h2>
             <ul id="dashboard-status" class="list"></ul>
           </article>
           <article class="card">
-            <h2>快速动作</h2>
+            <h2 data-i18n="dashboard_quick_actions">Quick Actions</h2>
             <div class="quick-actions">
-              <button class="btn" data-action="goto-orders">去订单/预约页</button>
-              <button class="btn" data-action="goto-catalog">去商品/就诊页</button>
-              <button class="btn" data-action="reload">刷新数据</button>
+              <button class="btn" data-action="goto-orders" data-i18n="quick_orders">Go to Orders/Appointments</button>
+              <button class="btn" data-action="goto-catalog" data-i18n="quick_catalog">Go to Products/Visits</button>
+              <button class="btn" data-action="reload" data-i18n="quick_reload">Refresh Data</button>
             </div>
           </article>
         </div>
@@ -54,34 +109,34 @@
       <section id="orders" class="panel">
         <div class="grid two-col">
           <article class="card" data-mode-only="shop">
-            <h2>新增订单</h2>
+            <h2 data-i18n="orders_create_order">Create Order</h2>
             <form id="order-form" class="form-grid">
-              <label>客户ID<input name="customer_id" required placeholder="cus_xxx" /></label>
-              <label>金额(HKD)<input name="amount_hkd" required type="number" step="0.01" /></label>
-              <label>状态
+              <label><span data-i18n="orders_customer_id">Customer ID</span><input name="customer_id" required placeholder="cus_xxx" data-i18n-placeholder="orders_customer_id_placeholder" /></label>
+              <label><span data-i18n="orders_amount_hkd">Amount (HKD)</span><input name="amount_hkd" required type="number" step="0.01" /></label>
+              <label><span data-i18n="orders_status">Status</span>
                 <select name="status">
                   <option value="pending">pending</option>
                   <option value="paid">paid</option>
                   <option value="cancelled">cancelled</option>
                 </select>
               </label>
-              <button type="submit" class="btn primary">创建订单</button>
+              <button type="submit" class="btn primary" data-i18n="orders_create_order_btn">Create Order</button>
             </form>
           </article>
 
           <article class="card" data-mode-only="clinic">
-            <h2>新增预约</h2>
+            <h2 data-i18n="orders_create_appt">Create Appointment</h2>
             <form id="appointment-form" class="form-grid">
-              <label>宠物ID<input name="pet_id" required placeholder="pet_001" /></label>
-              <label>医生ID<input name="doctor_id" required placeholder="doc_001" /></label>
-              <label>预约时间(ISO)<input name="scheduled_at" required placeholder="2026-03-01T10:00:00Z" /></label>
-              <label>主诉<input name="chief_complaint" required placeholder="vomiting" /></label>
-              <button type="submit" class="btn primary">创建预约</button>
+              <label><span data-i18n="orders_pet_id">Pet ID</span><input name="pet_id" required placeholder="pet_001" data-i18n-placeholder="orders_pet_placeholder" /></label>
+              <label><span data-i18n="orders_doctor_id">Doctor ID</span><input name="doctor_id" required placeholder="doc_001" data-i18n-placeholder="orders_doctor_placeholder" /></label>
+              <label><span data-i18n="orders_scheduled_at">Schedule Time (ISO)</span><input name="scheduled_at" required placeholder="2026-03-01T10:00:00Z" data-i18n-placeholder="orders_schedule_placeholder" /></label>
+              <label><span data-i18n="orders_chief_complaint">Chief Complaint</span><input name="chief_complaint" required placeholder="vomiting" data-i18n-placeholder="orders_complaint_placeholder" /></label>
+              <button type="submit" class="btn primary" data-i18n="orders_create_appt_btn">Create Appointment</button>
             </form>
           </article>
 
           <article class="card">
-            <h2 id="orders-list-title">订单列表</h2>
+            <h2 id="orders-list-title">Orders</h2>
             <div class="table-wrap">
               <table>
                 <thead id="orders-table-head"></thead>
@@ -95,35 +150,35 @@
       <section id="catalog" class="panel">
         <div class="grid two-col">
           <article class="card" data-mode-only="shop">
-            <h2>新增商品</h2>
+            <h2 data-i18n="catalog_create_product">Create Product</h2>
             <form id="product-form" class="form-grid">
-              <label>商品名称<input name="name" required /></label>
-              <label>SKU<input name="sku" required /></label>
-              <label>库存<input name="stock" required type="number" /></label>
-              <label>价格(HKD)<input name="price_hkd" required type="number" step="0.01" /></label>
-              <button type="submit" class="btn primary">创建商品</button>
+              <label><span data-i18n="catalog_product_name">Product Name</span><input name="name" required /></label>
+              <label><span data-i18n="catalog_sku">SKU</span><input name="sku" required /></label>
+              <label><span data-i18n="catalog_stock">Stock</span><input name="stock" required type="number" /></label>
+              <label><span data-i18n="catalog_price_hkd">Price (HKD)</span><input name="price_hkd" required type="number" step="0.01" /></label>
+              <button type="submit" class="btn primary" data-i18n="catalog_create_product_btn">Create Product</button>
             </form>
           </article>
 
           <article class="card" data-mode-only="clinic">
-            <h2>新增就诊记录</h2>
+            <h2 data-i18n="catalog_create_visit">Create Visit</h2>
             <form id="visit-form" class="form-grid">
-              <label>宠物ID<input name="pet_id" required /></label>
-              <label>医生ID<input name="doctor_id" required /></label>
-              <label>关联预约ID<input name="appointment_id" placeholder="可选" /></label>
-              <label>状态
+              <label><span data-i18n="catalog_pet_id">Pet ID</span><input name="pet_id" required /></label>
+              <label><span data-i18n="catalog_doctor_id">Doctor ID</span><input name="doctor_id" required /></label>
+              <label><span data-i18n="catalog_appt_id">Appointment ID</span><input name="appointment_id" placeholder="Optional" data-i18n-placeholder="catalog_appt_placeholder" /></label>
+              <label><span data-i18n="catalog_status">Status</span>
                 <select name="status">
                   <option value="in_progress">in_progress</option>
                   <option value="diagnosed">diagnosed</option>
                   <option value="closed">closed</option>
                 </select>
               </label>
-              <button type="submit" class="btn primary">创建就诊</button>
+              <button type="submit" class="btn primary" data-i18n="catalog_create_visit_btn">Create Visit</button>
             </form>
           </article>
 
           <article class="card">
-            <h2 id="catalog-list-title">商品列表</h2>
+            <h2 id="catalog-list-title">Products</h2>
             <div class="table-wrap">
               <table>
                 <thead id="catalog-table-head"></thead>
@@ -137,30 +192,30 @@
       <section id="customers" class="panel">
         <div class="grid two-col">
           <article class="card" data-mode-only="shop">
-            <h2>新增客户</h2>
+            <h2 data-i18n="customers_create_customer">Create Customer</h2>
             <form id="customer-form" class="form-grid">
-              <label>姓名<input name="name" required /></label>
+              <label><span data-i18n="customers_name">Name</span><input name="name" required /></label>
               <label>Email<input name="email" required type="email" /></label>
-              <label>电话<input name="phone" required /></label>
-              <button type="submit" class="btn primary">创建客户</button>
+              <label><span data-i18n="customers_phone">Phone</span><input name="phone" required /></label>
+              <button type="submit" class="btn primary" data-i18n="customers_create_customer_btn">Create Customer</button>
             </form>
           </article>
 
           <article class="card" data-mode-only="clinic">
-            <h2>新增处方</h2>
+            <h2 data-i18n="customers_create_rx">Create Prescription</h2>
             <form id="prescription-form" class="form-grid">
-              <label>就诊ID<input name="visit_id" required /></label>
-              <label>药品<input name="medicine_name" required /></label>
-              <label>剂量<input name="dosage" required /></label>
-              <label>频次<input name="frequency" required /></label>
-              <label>天数<input name="duration_days" required type="number" /></label>
-              <label>备注<input name="notes" /></label>
-              <button type="submit" class="btn primary">创建处方</button>
+              <label><span data-i18n="customers_visit_id">Visit ID</span><input name="visit_id" required /></label>
+              <label><span data-i18n="customers_medicine">Medicine</span><input name="medicine_name" required /></label>
+              <label><span data-i18n="customers_dosage">Dosage</span><input name="dosage" required /></label>
+              <label><span data-i18n="customers_frequency">Frequency</span><input name="frequency" required /></label>
+              <label><span data-i18n="customers_days">Duration Days</span><input name="duration_days" required type="number" /></label>
+              <label><span data-i18n="customers_notes">Notes</span><input name="notes" /></label>
+              <button type="submit" class="btn primary" data-i18n="customers_create_rx_btn">Create Prescription</button>
             </form>
           </article>
 
           <article class="card">
-            <h2 id="customers-list-title">客户列表</h2>
+            <h2 id="customers-list-title">Customers</h2>
             <div class="table-wrap">
               <table>
                 <thead id="customers-table-head"></thead>
@@ -173,7 +228,7 @@
 
       <section id="analytics" class="panel">
         <article class="card">
-          <h2>关键指标 JSON 预览（便于联调）</h2>
+          <h2 data-i18n="analytics_title">KPI JSON Preview (for integration)</h2>
           <pre id="analytics-json" class="json-box"></pre>
         </article>
       </section>
@@ -181,27 +236,43 @@
       <section id="settings" class="panel">
         <div class="grid two-col">
           <article class="card">
-            <h2>Shopify OAuth 占位测试</h2>
+            <h2 data-i18n="settings_oauth_title">Shopify OAuth Placeholder Test</h2>
             <form id="shopify-oauth-form" class="form-grid">
               <label>Shop Domain<input name="shop_domain" required placeholder="demo-store.myshopify.com" /></label>
-              <button type="submit" class="btn primary">发起 OAuth 占位请求</button>
+              <button type="submit" class="btn primary" data-i18n="settings_oauth_btn">Send OAuth Placeholder Request</button>
             </form>
           </article>
           <article class="card">
-            <h2>Shopify Webhook 占位测试</h2>
+            <h2 data-i18n="settings_webhook_title">Shopify Webhook Placeholder Test</h2>
             <form id="shopify-webhook-form" class="form-grid">
               <label>Topic<input name="topic" required value="orders/create" /></label>
-              <button type="submit" class="btn primary">发送 Webhook 占位事件</button>
+              <button type="submit" class="btn primary" data-i18n="settings_webhook_btn">Send Webhook Placeholder Event</button>
             </form>
           </article>
         </div>
         <article class="card">
-          <h2>最后响应</h2>
+          <h2 data-i18n="settings_last_resp">Last Response</h2>
           <pre id="settings-response" class="json-box">{}</pre>
+        </article>
+        <article class="card">
+          <h2 data-i18n="settings_guide_title">Onboarding Guide</h2>
+          <p data-i18n="settings_guide_desc">Replay the function guide for each page.</p>
+          <button id="replay-guide-btn" class="btn" data-i18n="settings_guide_btn">Replay Guide</button>
         </article>
       </section>
     </main>
   </div>
+
+  <div id="guide-backdrop" class="guide-backdrop hidden"></div>
+  <aside id="guide-panel" class="guide-panel hidden">
+    <div class="guide-progress" id="guide-progress">1 / 6</div>
+    <h3 id="guide-title">Page Guide</h3>
+    <p id="guide-desc">This panel explains each page.</p>
+    <div class="guide-actions">
+      <button id="skip-guide-btn" class="btn" data-i18n="guide_skip">Skip guide</button>
+      <button id="next-guide-btn" class="btn primary">Next</button>
+    </div>
+  </aside>
 
   <script src="./app.js"></script>
 </body>

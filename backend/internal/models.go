@@ -79,3 +79,35 @@ type Customer struct {
 	CreatedAt  time.Time `json:"created_at"`
 	LastActive time.Time `json:"last_active"`
 }
+
+type AuthLoginRequest struct {
+	Method      string `json:"method"`
+	Email       string `json:"email,omitempty"`
+	Phone       string `json:"phone,omitempty"`
+	CountryCode string `json:"country_code,omitempty"`
+	Password    string `json:"password,omitempty"`
+}
+
+type AuthSessionUser struct {
+	ID           string `json:"id"`
+	TenantID     string `json:"tenant_id"`
+	MerchantType string `json:"merchant_type"`
+	Role         string `json:"role"`
+	DisplayName  string `json:"display_name"`
+	Method       string `json:"method"`
+}
+
+type AuthLoginResponse struct {
+	SessionID string          `json:"session_id"`
+	User      AuthSessionUser `json:"user"`
+}
+
+type SessionInfo struct {
+	SessionID    string
+	UserID       string
+	TenantID     string
+	MerchantType string
+	Role         string
+	DisplayName  string
+	Method       string
+}
