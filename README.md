@@ -25,6 +25,7 @@
 | `07_App联调说明.md` | 商家端与 App 的字段映射与同步时序 | 是 |
 | `08_商家端总览与后续拓展建议.md` | 当前版本总览 + Shopify 方法 + 测试运行说明 | 是 |
 | `09_最终测试稿_登录与租户隔离.md` | 当前版本核心测试账号与执行用例 | 是 |
+| `backend/openapi.yaml` | 当前后端接口契约（OpenAPI 初版） | 是 |
 
 ---
 
@@ -34,6 +35,7 @@
 - 会话机制启用：业务 API 需 `X-Session-ID`
 - 租户隔离启用：按 session 的 `tenant_id` 强制过滤和写入
 - 前端支持中英切换、登录、Guide 引导
+- 已提供 OpenAPI 初版契约：`backend/openapi.yaml`
 
 ---
 
@@ -54,6 +56,12 @@ bash 06_API冒烟测试脚本.sh
 # 3) 切换为医院测试账号执行
 LOGIN_EMAIL=clinic_admin@petwell.com LOGIN_PASSWORD=Clinic123456 bash 06_API冒烟测试脚本.sh
 ```
+
+可选环境变量（后端）：
+- `PETWELL_ENV=dev|staging|prod`（默认 `dev`）
+- `PETWELL_ADDR=:8090`（监听地址）
+- `PETWELL_STORE=sqlite|memory`（默认 `sqlite`）
+- `PETWELL_DB_PATH=./db/petwell_merchant.db`（自定义 SQLite 路径）
 
 ---
 

@@ -1,0 +1,837 @@
+openapi: 3.0.3
+info:
+  title: PetWell Merchant Backend API
+  version: 0.2.0
+  description: >-
+    Initial OpenAPI contract for the current PetWell merchant backend implementation.
+servers:
+  - url: http://localhost:8090
+    description: Local development
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Dashboard
+  - name: Shop
+  - name: Clinic
+  - name: Shopify
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      operationId: getHealth
+      responses:
+        200:
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        503:
+          description: Service is degraded (for example DB unreachable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/merchant/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email/phone/google-demo
+      operationId: postMerchantAuthLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthLoginRequest'
+      responses:
+        200:
+          description: Login success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthLoginResponse'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        500:
+          $ref: '#/components/responses/InternalError'
+
+  /api/merchant/dashboard:
+    get:
+      tags: [Dashboard]
+      summary: Get dashboard KPI payload
+      operationId: getMerchantDashboard
+      security:
+        - SessionID: []
+      parameters:
+        - in: query
+          name: mode
+          required: false
+          schema:
+            type: string
+            enum: [shop, clinic]
+      responses:
+        200:
+          description: KPI payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/merchant/orders:
+    get:
+      tags: [Shop]
+      summary: List orders in current tenant
+      operationId: getMerchantOrders
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Order list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Shop]
+      summary: Create order in current tenant
+      operationId: postMerchantOrders
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        201:
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/merchant/products:
+    get:
+      tags: [Shop]
+      summary: List products in current tenant
+      operationId: getMerchantProducts
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Product list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Shop]
+      summary: Create product in current tenant
+      operationId: postMerchantProducts
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        201:
+          description: Created product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/merchant/customers:
+    get:
+      tags: [Shop]
+      summary: List customers in current tenant
+      operationId: getMerchantCustomers
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Customer list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Shop]
+      summary: Create customer in current tenant
+      operationId: postMerchantCustomers
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerRequest'
+      responses:
+        201:
+          description: Created customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/merchant/appointments:
+    get:
+      tags: [Clinic]
+      summary: List appointments in current tenant
+      operationId: getMerchantAppointments
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Appointment list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Clinic]
+      summary: Create appointment in current tenant
+      operationId: postMerchantAppointments
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppointmentRequest'
+      responses:
+        201:
+          description: Created appointment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Appointment'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/merchant/visits:
+    get:
+      tags: [Clinic]
+      summary: List visits in current tenant
+      operationId: getMerchantVisits
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Visit list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Visit'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Clinic]
+      summary: Create visit in current tenant
+      operationId: postMerchantVisits
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVisitRequest'
+      responses:
+        201:
+          description: Created visit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Visit'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/merchant/prescriptions:
+    get:
+      tags: [Clinic]
+      summary: List prescriptions in current tenant
+      operationId: getMerchantPrescriptions
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Prescription list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Prescription'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Clinic]
+      summary: Create prescription for a visit
+      operationId: postMerchantPrescriptions
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePrescriptionRequest'
+      responses:
+        201:
+          description: Created prescription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prescription'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /api/merchant/followups:
+    get:
+      tags: [Clinic]
+      summary: List follow-ups in current tenant
+      operationId: getMerchantFollowUps
+      security:
+        - SessionID: []
+      responses:
+        200:
+          description: Follow-up list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FollowUp'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags: [Clinic]
+      summary: Create follow-up for a visit
+      operationId: postMerchantFollowUps
+      security:
+        - SessionID: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFollowUpRequest'
+      responses:
+        201:
+          description: Created follow-up
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FollowUp'
+        400:
+          $ref: '#/components/responses/BadRequestError'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          $ref: '#/components/responses/ForbiddenError'
+
+  /api/merchant/shopify/oauth/start:
+    post:
+      tags: [Shopify]
+      summary: Shopify OAuth start placeholder
+      operationId: postMerchantShopifyOAuthStart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopifyOAuthRequest'
+      responses:
+        200:
+          description: Placeholder response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  next:
+                    type: string
+        400:
+          $ref: '#/components/responses/BadRequestError'
+
+  /api/merchant/shopify/webhooks:
+    post:
+      tags: [Shopify]
+      summary: Shopify webhook placeholder
+      operationId: postMerchantShopifyWebhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopifyWebhookEvent'
+      responses:
+        202:
+          description: Placeholder accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  topic:
+                    type: string
+        400:
+          $ref: '#/components/responses/BadRequestError'
+
+components:
+  securitySchemes:
+    SessionID:
+      type: apiKey
+      in: header
+      name: X-Session-ID
+
+  responses:
+    BadRequestError:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    ForbiddenError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/APIErrorResponse'
+
+  schemas:
+    APIErrorResponse:
+      type: object
+      required: [error, request_id]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        request_id:
+          type: string
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded]
+        service:
+          type: object
+          properties:
+            name:
+              type: string
+            time_utc:
+              type: string
+              format: date-time
+        store:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [memory, sqlite]
+        db:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            reachable:
+              type: boolean
+            schema_version:
+              type: string
+            error:
+              type: string
+
+    AuthLoginRequest:
+      type: object
+      required: [method]
+      properties:
+        method:
+          type: string
+          enum: [email, phone, google]
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        country_code:
+          type: string
+        password:
+          type: string
+
+    AuthSessionUser:
+      type: object
+      required: [id, tenant_id, merchant_type, role, display_name, method]
+      properties:
+        id:
+          type: string
+        tenant_id:
+          type: string
+        merchant_type:
+          type: string
+        role:
+          type: string
+        display_name:
+          type: string
+        method:
+          type: string
+
+    AuthLoginResponse:
+      type: object
+      required: [session_id, user]
+      properties:
+        session_id:
+          type: string
+        user:
+          $ref: '#/components/schemas/AuthSessionUser'
+
+    DashboardResponse:
+      type: object
+      properties:
+        mode:
+          type: string
+        kpis:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        tenant_id:
+          type: string
+        customer_id:
+          type: string
+        status:
+          type: string
+        amount_hkd:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+
+    CreateOrderRequest:
+      type: object
+      required: [customer_id, status, amount_hkd]
+      properties:
+        customer_id:
+          type: string
+        status:
+          type: string
+        amount_hkd:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        tenant_id:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        stock:
+          type: integer
+        price_hkd:
+          type: number
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateProductRequest:
+      type: object
+      required: [name, sku, stock, price_hkd]
+      properties:
+        name:
+          type: string
+        sku:
+          type: string
+        stock:
+          type: integer
+        price_hkd:
+          type: number
+        updated_at:
+          type: string
+          format: date-time
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        tenant_id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        last_active:
+          type: string
+          format: date-time
+
+    CreateCustomerRequest:
+      type: object
+      required: [name, email, phone]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        last_active:
+          type: string
+          format: date-time
+
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: string
+        tenant_id:
+          type: string
+        pet_id:
+          type: string
+        doctor_id:
+          type: string
+        scheduled_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+        chief_complaint:
+          type: string
+
+    CreateAppointmentRequest:
+      type: object
+      required: [pet_id, doctor_id, chief_complaint]
+      properties:
+        pet_id:
+          type: string
+        doctor_id:
+          type: string
+        scheduled_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+        chief_complaint:
+          type: string
+
+    Visit:
+      type: object
+      properties:
+        id:
+          type: string
+        tenant_id:
+          type: string
+        appointment_id:
+          type: string
+        pet_id:
+          type: string
+        doctor_id:
+          type: string
+        status:
+          type: string
+        checkin_at:
+          type: string
+          format: date-time
+        checkout_at:
+          type: string
+          format: date-time
+
+    CreateVisitRequest:
+      type: object
+      required: [pet_id, doctor_id]
+      properties:
+        appointment_id:
+          type: string
+        pet_id:
+          type: string
+        doctor_id:
+          type: string
+        status:
+          type: string
+        checkin_at:
+          type: string
+          format: date-time
+        checkout_at:
+          type: string
+          format: date-time
+
+    Prescription:
+      type: object
+      properties:
+        id:
+          type: string
+        visit_id:
+          type: string
+        medicine_name:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        duration_days:
+          type: integer
+        notes:
+          type: string
+
+    CreatePrescriptionRequest:
+      type: object
+      required: [visit_id, medicine_name, dosage, frequency, duration_days]
+      properties:
+        visit_id:
+          type: string
+        medicine_name:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        duration_days:
+          type: integer
+        notes:
+          type: string
+
+    FollowUp:
+      type: object
+      properties:
+        id:
+          type: string
+        visit_id:
+          type: string
+        due_at:
+          type: string
+          format: date-time
+        channel:
+          type: string
+        status:
+          type: string
+        result_notes:
+          type: string
+
+    CreateFollowUpRequest:
+      type: object
+      required: [visit_id, channel]
+      properties:
+        visit_id:
+          type: string
+        due_at:
+          type: string
+          format: date-time
+        channel:
+          type: string
+        status:
+          type: string
+        result_notes:
+          type: string
+
+    ShopifyOAuthRequest:
+      type: object
+      required: [shop_domain]
+      properties:
+        shop_domain:
+          type: string
+
+    ShopifyWebhookEvent:
+      type: object
+      required: [topic, payload]
+      properties:
+        topic:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true

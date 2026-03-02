@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented here.
 
+## 2026-03-02
+
+### Added
+- Added OpenAPI initial contract at `backend/openapi.yaml`.
+- Added structured API error response shape with `error.code`, `error.message`, and `request_id`.
+- Added `X-Request-ID` request/response header support for traceability.
+- Added environment profile config loader (`dev/staging/prod`) in `backend/internal/config.go`.
+- Added config unit tests in `backend/internal/config_test.go`.
+
+### Changed
+- Upgraded `GET /health` to include store type, DB reachability, and schema version metadata.
+- Upgraded request logging to include `request_id`, `tenant_id`, `user_id`, `status`, and `duration_ms`.
+- Updated CORS headers to allow/expose `X-Request-ID`.
+
 ## 2026-03-01
 
 ### Added
