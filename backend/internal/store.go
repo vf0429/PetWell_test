@@ -890,11 +890,13 @@ func (s *Store) ListFollowUps(tenantID string) []FollowUp {
 }
 
 func (s *Store) SeedDemoData() {
+	// Always ensure demo users exist, even when business data was already seeded.
+	s.seedDemoUsers()
+	s.seedTestClinicData()
+
 	if len(s.ListOrders("tenant_shop_demo")) > 0 || len(s.ListAppointments("tenant_clinic_demo")) > 0 {
 		return
 	}
-
-	s.seedDemoUsers()
 
 	s.CreateCustomer(Customer{
 		TenantID: "tenant_shop_demo",
@@ -961,6 +963,35 @@ func (s *Store) SeedDemoData() {
 	})
 }
 
+func (s *Store) seedTestClinicData() {
+	if len(s.ListAppointments("tenant_clinic_testclinics")) > 0 {
+		return
+	}
+
+	s.CreateAppointment(Appointment{
+		TenantID:       "tenant_clinic_testclinics",
+		PetID:          "pet_test_001",
+		DoctorID:       "doc_test_001",
+		ScheduledAt:    time.Now().Add(3 * time.Hour),
+		Status:         "confirmed",
+		ChiefComplaint: "test booking",
+	})
+	v := s.CreateVisit(Visit{
+		TenantID: "tenant_clinic_testclinics",
+		PetID:    "pet_test_001",
+		DoctorID: "doc_test_001",
+		Status:   "in_progress",
+	})
+	s.CreatePrescription(Prescription{
+		VisitID:      v.ID,
+		MedicineName: "test prescription",
+		Dosage:       "1 tablet",
+		Frequency:    "QD",
+		DurationDays: 3,
+		Notes:        "testclinics seed data",
+	})
+}
+
 func (s *Store) seedDemoUsers() {
 	users := []staffUser{
 		{
@@ -982,6 +1013,17 @@ func (s *Store) seedDemoUsers() {
 			Name:         "Clinic Admin",
 			Email:        "clinic_admin@petwell.com",
 			Phone:        "+85290000022",
+			AuthProvider: "password",
+			PasswordHash: hashPassword("Clinic123456"),
+		},
+		{
+			ID:           "usr_testclinics_admin",
+			TenantID:     "tenant_clinic_testclinics",
+			MerchantType: "clinic",
+			Role:         "admin",
+			Name:         "testclinics",
+			Email:        "testclinics@petwell.com",
+			Phone:        "+85290000044",
 			AuthProvider: "password",
 			PasswordHash: hashPassword("Clinic123456"),
 		},

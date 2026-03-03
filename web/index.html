@@ -235,22 +235,27 @@
 
       <section id="settings" class="panel">
         <div class="grid two-col">
-          <article class="card">
+          <article class="card" data-mode-only="shop">
             <h2 data-i18n="settings_oauth_title">Shopify OAuth Placeholder Test</h2>
             <form id="shopify-oauth-form" class="form-grid">
               <label>Shop Domain<input name="shop_domain" required placeholder="demo-store.myshopify.com" /></label>
               <button type="submit" class="btn primary" data-i18n="settings_oauth_btn">Send OAuth Placeholder Request</button>
             </form>
           </article>
-          <article class="card">
+          <article class="card" data-mode-only="shop">
             <h2 data-i18n="settings_webhook_title">Shopify Webhook Placeholder Test</h2>
             <form id="shopify-webhook-form" class="form-grid">
               <label>Topic<input name="topic" required value="orders/create" /></label>
               <button type="submit" class="btn primary" data-i18n="settings_webhook_btn">Send Webhook Placeholder Event</button>
             </form>
           </article>
+          <article class="card" data-mode-only="clinic">
+            <h2 data-i18n="settings_clinic_title">Clinic Settings</h2>
+            <p data-i18n="settings_clinic_desc">Clinic mode does not include shop domain or Shopify webhook settings.</p>
+            <p><strong data-i18n="settings_clinic_identity_label">Clinic Identity:</strong> <span data-i18n="settings_clinic_identity_value">testclinics</span></p>
+          </article>
         </div>
-        <article class="card">
+        <article class="card" data-mode-only="shop">
           <h2 data-i18n="settings_last_resp">Last Response</h2>
           <pre id="settings-response" class="json-box">{}</pre>
         </article>

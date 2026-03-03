@@ -20,7 +20,7 @@ const I18N = {
     auth_phone_label: "Phone",
     auth_phone_placeholder: "13800138000",
     auth_phone_btn: "Sign in with Phone",
-    auth_demo_hint: "Demo: shop_admin@petwell.com / Shop123456, clinic_admin@petwell.com / Clinic123456",
+    auth_demo_hint: "Demo: shop_admin@petwell.com / Shop123456, testclinics@petwell.com / Clinic123456",
     app_title: "Merchant Console",
     menu_dashboard: "Dashboard",
     menu_orders: "Orders / Appointments",
@@ -84,6 +84,10 @@ const I18N = {
     settings_oauth_btn: "Send OAuth Placeholder Request",
     settings_webhook_title: "Shopify Webhook Placeholder Test",
     settings_webhook_btn: "Send Webhook Placeholder Event",
+    settings_clinic_title: "Clinic Settings",
+    settings_clinic_desc: "Clinic mode does not include shop domain or Shopify webhook settings.",
+    settings_clinic_identity_label: "Clinic Identity:",
+    settings_clinic_identity_value: "testclinics",
     settings_last_resp: "Last Response",
     settings_guide_title: "Onboarding Guide",
     settings_guide_desc: "Replay the function guide for each page.",
@@ -145,7 +149,7 @@ const I18N = {
     auth_phone_label: "手机号",
     auth_phone_placeholder: "13800138000",
     auth_phone_btn: "手机号登录",
-    auth_demo_hint: "测试账号：shop_admin@petwell.com / Shop123456，clinic_admin@petwell.com / Clinic123456",
+    auth_demo_hint: "测试账号：shop_admin@petwell.com / Shop123456，testclinics@petwell.com / Clinic123456",
     app_title: "商家工作台",
     menu_dashboard: "Dashboard",
     menu_orders: "订单 / 预约",
@@ -209,6 +213,10 @@ const I18N = {
     settings_oauth_btn: "发起 OAuth 占位请求",
     settings_webhook_title: "Shopify Webhook 占位测试",
     settings_webhook_btn: "发送 Webhook 占位事件",
+    settings_clinic_title: "医院设置",
+    settings_clinic_desc: "医院模式不展示任何 shop domain 或 Shopify webhook 配置。",
+    settings_clinic_identity_label: "医院标识：",
+    settings_clinic_identity_value: "testclinics",
     settings_last_resp: "最后响应",
     settings_guide_title: "新手引导",
     settings_guide_desc: "重新播放每一页功能介绍。",
@@ -307,8 +315,8 @@ const GUIDE_STEPS = [
     selector: "#settings",
     title: { en: "Settings", zh: "设置" },
     desc: {
-      en: "Run Shopify OAuth/Webhook placeholder tests and replay onboarding guide.",
-      zh: "这里做 Shopify OAuth / Webhook 测试，也可以重新播放新手引导。",
+      en: "Settings are strictly separated by mode. Shop handles Shopify tests; clinic hides all shop-domain settings.",
+      zh: "设置页会按模式严格隔离：商品模式用于 Shopify 测试；医院模式不会显示任何商店域名设置。",
     },
   },
 ];
@@ -604,6 +612,9 @@ function startGuide() {
 
 function saveSession(session) {
   state.session = session;
+  if (session?.user?.merchant_type === "shop" || session?.user?.merchant_type === "clinic") {
+    state.mode = session.user.merchant_type;
+  }
   localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   el("current-user").textContent = formatUser(session);
 }
